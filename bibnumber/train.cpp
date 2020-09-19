@@ -15,14 +15,14 @@
 
 namespace fs = boost::filesystem;
 
-class LinearSVM: public CvSVM {
+class LinearSVM: public cv::ml::SVM {
 public:
 	void getSupportVector(std::vector<float>& support_vector) const;
 };
 
 void LinearSVM::getSupportVector(std::vector<float>& support_vector) const {
 
-	int sv_count = get_support_vector_count();
+	int sv_count = getSupportVectors().rows;
 	const CvSVMDecisionFunc* df = decision_func;
 	const double* alphas = df[0].alpha;
 	double rho = df[0].rho;

@@ -101,7 +101,7 @@ int Pipeline::processImage(
 		}
 	}
 #else
-	IplImage ipl_img = img;
+	IplImage ipl_img = cvIplImage( img );
 	std::vector<std::string> text;
 	struct TextDetectionParams params = {
 						1, /* darkOnLight */

@@ -30,6 +30,8 @@
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
 #include <opencv/cxcore.h>
+#include <opencv2/core/core_c.h>
+#include <opencv2/imgproc.hpp>
 #include <math.h>
 #include <time.h>
 #include <utility>
@@ -226,7 +228,7 @@ void renderComponentsWithBoxes(IplImage * SWTImage,
 
 		char *txt;
 		asprintf(&txt, "%d", count);
-		cv::Mat tmp_mat = cv::Mat(output);
+		cv::Mat tmp_mat = cv::cvarrToMat( output );
 		cv::rectangle(tmp_mat, it->first, it->second, c);
 		cv::putText(tmp_mat, txt, it->first, cv::FONT_HERSHEY_SIMPLEX, 0.3, c);
 		free(txt);

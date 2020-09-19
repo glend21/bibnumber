@@ -7,6 +7,8 @@
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
 #include <opencv2/ml/ml.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/objdetect.hpp>
 
 #include "train.h"
 
@@ -193,8 +195,8 @@ int TextRecognizer::recognize(IplImage *input,
 				"Chain #" << i << " Angle: " << theta_deg << " degrees");
 
 		/* create copy of input image including only the selected components */
-		cv::Mat inputMat = cv::Mat(input);
-		cv::Mat grayMat = cv::Mat(grayImage);
+		cv::Mat inputMat = cv::cvarrToMat(input);
+		cv::Mat grayMat = cv::cvarrToMat(grayImage);
 		cv::Mat componentsImg = cv::Mat::zeros(grayMat.rows, grayMat.cols,
 				grayMat.type());
 
@@ -337,7 +339,7 @@ int TextRecognizer::recognize(IplImage *input,
 
 					/* if we have an SVM Model, predict */
 
-					CvSVM svm;
+					cv::Ptr<cv::ml::SVM> svm = cv::ml::SVM::create();
 					cv::HOGDescriptor hog(cv::Size(128, 64), /* windows size */
 					cv::Size(16, 16), /* block size */
 					cv::Size(8, 8), /* block stride */
@@ -352,8 +354,8 @@ int TextRecognizer::recognize(IplImage *input,
 					hog.compute(resizedMat, descriptor);
 
 					/* load SVM model */
-					svm.load(svmModel.c_str());
-					float prediction = svm.predict(cv::Mat(descriptor).t());
+					svm->load(svmModel.c_str());
+					float prediction = svm->predict(cv::Mat(descriptor).t());
 					LOGL(LOG_SVM, "Prediction=" << prediction);
 					if (prediction < 0.5) {
 						LOGL(LOG_TEXTREC,
